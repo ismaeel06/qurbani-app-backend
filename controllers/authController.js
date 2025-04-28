@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 exports.register = async (req, res) => {
   try {
     const { name, email, password, phone, role } = req.body;
+
     if (!name || !email || !password) return res.status(400).json({ message: "Missing fields" });
 
     const existingUser = await User.findOne({ email });
@@ -42,7 +43,10 @@ exports.register = async (req, res) => {
 exports.verifyOTP = async (req, res) => {
   try {
     const { phone, otp } = req.body;
-    const user = await User.findOne({ phone, otp, otpExpires: { $gt: new Date() } });
+    console.log(phone + " " + otp)
+    const user = await User.findOne({ phone,  });
+    //otpExpires: { $gt: new Date() } // Check if OTP is expired add this above later
+    //otp,
     if (!user) return res.status(400).json({ message: "Invalid or expired OTP" });
 
     user.isVerified = true;
