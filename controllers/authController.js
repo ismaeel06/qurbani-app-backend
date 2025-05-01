@@ -44,9 +44,8 @@ exports.verifyOTP = async (req, res) => {
   try {
     const { phone, otp } = req.body;
     console.log(phone + " " + otp)
-    const user = await User.findOne({ phone,  });
-    //otpExpires: { $gt: new Date() } // Check if OTP is expired add this above later
-    //otp,
+    const user = await User.findOne({ phone,   otpExpires: { $gt: new Date() }  , otp });
+  // Check if OTP is expired add this above laterotp,
     if (!user) return res.status(400).json({ message: "Invalid or expired OTP" });
 
     user.isVerified = true;
