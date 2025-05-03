@@ -18,6 +18,7 @@ export const getAllListings = async (req, res) => {
       limit = 10
     } = req.query;
 
+
     // Build filter object
     const filter = {};
     
@@ -59,6 +60,7 @@ export const getAllListings = async (req, res) => {
       .skip(skip)
       .limit(Number(limit))
       .populate('seller', 'name profileImage createdAt');
+
     
     // Get total count for pagination
     const total = await Listing.countDocuments(filter);
@@ -69,6 +71,9 @@ export const getAllListings = async (req, res) => {
       page: Number(page),
       pages: Math.ceil(total / Number(limit))
     });
+
+
+
   } catch (error) {
     console.error("Error in getAllListings:", error);
     res.status(500).json({ message: "Failed to fetch listings", error: error.message });
@@ -326,6 +331,7 @@ export const getUserListings = async (req, res) => {
   try {
     const userId = req.user._id;
 
+    console.log(userId)
     const listings = await Listing.find({ seller: userId })
       .sort({ createdAt: -1 })
       .populate('seller', 'name profileImage createdAt');
@@ -352,6 +358,8 @@ export const getFavoriteListings = async (req, res) => {
     const favorites = await Listing.find({ _id: { $in: user.favorites } })
       .sort({ createdAt: -1 })
       .populate('seller', 'name profileImage createdAt');
+
+
 
     res.status(200).json(favorites);
   } catch (error) {
