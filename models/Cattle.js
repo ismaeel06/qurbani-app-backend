@@ -1,5 +1,5 @@
 // models/Listing.js
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const listingSchema = new mongoose.Schema({
   title: {
@@ -67,6 +67,6 @@ listingSchema.index({
   location: 'text'
 });
 
-const Listing = mongoose.model('Listing', listingSchema);
+module.exports = mongoose.model('Listing', listingSchema);
 
-export default Listing;
+//export default Listing;

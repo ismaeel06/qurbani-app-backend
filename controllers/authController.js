@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const sendSMS = require("../utilities/twilio");
 
 // Register
 exports.register = async (req, res) => {

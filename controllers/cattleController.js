@@ -1,12 +1,12 @@
 // controllers/CattleController.js
-import Listing from '../models/Cattle.js';
-import User from '../models/User.js';
-import mongoose from 'mongoose';
-import fs from 'fs';
-import path from 'path';
+const Listing = require('../models/Cattle');
+const User = require('../models/User');
+const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 
 // Get all listings with filters
-export const getAllListings = async (req, res) => {
+exports.getAllListings = async (req, res) => {
   try {
     const { 
       category, 
@@ -81,7 +81,7 @@ export const getAllListings = async (req, res) => {
 };
 
 // Get featured listings
-export const getFeaturedListings = async (req, res) => {
+exports.getFeaturedListings = async (req, res) => {
   try {
     // You can determine "featured" based on various criteria
     // Here we're simply getting the newest listings
@@ -98,7 +98,7 @@ export const getFeaturedListings = async (req, res) => {
 };
 
 // Get single listing by ID
-export const getListingById = async (req, res) => {
+exports.getListingById = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -121,7 +121,7 @@ export const getListingById = async (req, res) => {
 };
 
 // Create new listing
-export const createListing = async (req, res) => {
+exports.createListing = async (req, res) => {
   try {
     const {
       title,
@@ -169,7 +169,8 @@ export const createListing = async (req, res) => {
 };
 
 // Update listing
-export const updateListing = async (req, res) => {
+// Update listing
+exports.updateListing = async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -197,11 +198,14 @@ export const updateListing = async (req, res) => {
       location,
       age,
       weight,
-      features
+      features,
+      imageUrls // <-- Add this to extract imageUrls from request body
     } = req.body;
 
     // Parse features if it's sent as a string
     const parsedFeatures = typeof features === 'string' ? JSON.parse(features) : features;
+    // Parse imageUrls if it's sent as a string
+    const parsedImageUrls = typeof imageUrls === 'string' ? JSON.parse(imageUrls) : imageUrls;
 
     // Update listing data
     listing.title = title || listing.title;
@@ -213,20 +217,9 @@ export const updateListing = async (req, res) => {
     listing.weight = weight ? Number(weight) : listing.weight;
     listing.features = parsedFeatures || listing.features;
 
-    // Handle image updates
-    if (req.files && req.files.length > 0) {
-      // Remove old images from storage if there were any
-      if (listing.images && listing.images.length > 0) {
-        listing.images.forEach(imageUrl => {
-          const imagePath = path.join(process.cwd(), 'public', imageUrl);
-          if (fs.existsSync(imagePath)) {
-            fs.unlinkSync(imagePath);
-          }
-        });
-      }
-      
-      // Add new images
-      listing.images = req.files.map(file => `/uploads/${file.filename}`);
+    // Update images with the combined existing and new URLs from frontend
+    if (parsedImageUrls && Array.isArray(parsedImageUrls)) {
+      listing.images = parsedImageUrls;
     }
 
     // Save updated listing
@@ -244,7 +237,7 @@ export const updateListing = async (req, res) => {
 };
 
 // Delete listing
-export const deleteListing = async (req, res) => {
+exports.deleteListing = async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -285,7 +278,7 @@ export const deleteListing = async (req, res) => {
 };
 
 // Toggle favorite listing
-export const toggleFavorite = async (req, res) => {
+exports.toggleFavorite = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user._id;
@@ -327,7 +320,7 @@ export const toggleFavorite = async (req, res) => {
 };
 
 // Get user's listings
-export const getUserListings = async (req, res) => {
+exports.getUserListings = async (req, res) => {
   try {
     const userId = req.user._id;
 
@@ -344,7 +337,7 @@ export const getUserListings = async (req, res) => {
 };
 
 // Get user's favorite listings
-export const getFavoriteListings = async (req, res) => {
+exports.getFavoriteListings = async (req, res) => {
   try {
     const userId = req.user._id;
 
