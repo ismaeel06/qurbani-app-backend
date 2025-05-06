@@ -59,7 +59,7 @@ exports.getAllListings = async (req, res) => {
       .sort(sortOption)
       .skip(skip)
       .limit(Number(limit))
-      .populate('seller', 'name profileImage createdAt');
+      .populate('seller', 'name profileImage createdAt phone');
 
     
     // Get total count for pagination
@@ -88,7 +88,7 @@ exports.getFeaturedListings = async (req, res) => {
     const featuredListings = await Listing.find()
       .sort({ createdAt: -1 })
       .limit(6)
-      .populate('seller', 'name profileImage createdAt');
+      .populate('seller', 'name profileImage createdAt phone');
 
     res.status(200).json(featuredListings);
   } catch (error) {
@@ -107,7 +107,7 @@ exports.getListingById = async (req, res) => {
     }
 
     const listing = await Listing.findById(id)
-      .populate('seller', 'name profileImage createdAt');
+      .populate('seller', 'name profileImage createdAt phone');
 
     if (!listing) {
       return res.status(404).json({ message: "Listing not found" });
@@ -159,7 +159,7 @@ exports.createListing = async (req, res) => {
     
     // Populate seller info before sending response
     const populatedListing = await Listing.findById(savedListing._id)
-      .populate('seller', 'name profileImage createdAt');
+      .populate('seller', 'name profileImage createdAt phone');
 
     res.status(201).json(populatedListing);
   } catch (error) {
@@ -227,7 +227,7 @@ exports.updateListing = async (req, res) => {
 
     // Populate seller info before sending response
     const populatedListing = await Listing.findById(updatedListing._id)
-      .populate('seller', 'name profileImage createdAt');
+      .populate('seller', 'name profileImage createdAt phone');
 
     res.status(200).json(populatedListing);
   } catch (error) {
@@ -327,7 +327,7 @@ exports.getUserListings = async (req, res) => {
     console.log(userId)
     const listings = await Listing.find({ seller: userId })
       .sort({ createdAt: -1 })
-      .populate('seller', 'name profileImage createdAt');
+      .populate('seller', 'name profileImage createdAt phone');
 
     res.status(200).json(listings);
   } catch (error) {
@@ -350,7 +350,7 @@ exports.getFavoriteListings = async (req, res) => {
     // Get all favorite listings
     const favorites = await Listing.find({ _id: { $in: user.favorites } })
       .sort({ createdAt: -1 })
-      .populate('seller', 'name profileImage createdAt');
+      .populate('seller', 'name profileImage createdAt phone');
 
 
 
