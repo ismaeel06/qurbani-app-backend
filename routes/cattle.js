@@ -23,7 +23,7 @@ router.get("/:id", getListingById);
 
 // Protected routes (require authentication)
 router.post("/", auth,upload.array("images"), createListing);
-router.put("/:id", auth, updateListing);
+router.put("/:id", auth, upload.array("images"), updateListing);
 router.delete("/:id", auth, deleteListing);
 router.post("/:id/favorite", auth, toggleFavorite);
 router.get("/user/listings", auth, getUserListings);
